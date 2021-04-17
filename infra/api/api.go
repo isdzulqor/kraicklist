@@ -37,6 +37,8 @@ func initDependencies(ctx context.Context, conf *config.Config) handler.Root {
 
 		bleveIndex   *index.BleveIndex
 		elasticIndex *index.ElasticIndex
+
+		healthPersistences health.Persistences
 	)
 
 	// indexer check
@@ -55,6 +57,10 @@ func initDependencies(ctx context.Context, conf *config.Config) handler.Root {
 		if err != nil {
 			logging.FatalContext(ctx, "%v", err)
 		}
+		// append health persistence
+		healthPersistences = append(healthPersistences,
+			health.NewPersistence(conf.Advertisement.Elastic.IndexName,
+				conf.Advertisement.Indexer, elasticIndex))
 	default:
 		logging.FatalContext(ctx, "Indexer for %s is invalid", conf.Advertisement.Indexer)
 	}
@@ -67,12 +73,6 @@ func initDependencies(ctx context.Context, conf *config.Config) handler.Root {
 
 	// initialize handlers
 	adHandler := handler.InitAdvertisement(conf, adService)
-
-	// initialize health
-	healthPersistences := health.Persistences{
-		health.NewPersistence(conf.Advertisement.Elastic.IndexName,
-			conf.Advertisement.Indexer, elasticIndex),
-	}
 	healthHandler, err := health.NewHealthHandler(&healthPersistences, conf.GracefulShutdownTimeout)
 	if err != nil {
 		logging.FatalContext(ctx, "failed to init healthHandler")
