@@ -8,7 +8,6 @@ import (
 	"kraicklist/domain/service"
 	"kraicklist/external/index"
 	"kraicklist/helper/logging"
-	"kraicklist/infra/seed"
 	"net/http"
 	"strings"
 )
@@ -16,9 +15,6 @@ import (
 func Exec() {
 	conf := config.Get()
 	conf.PrintPretty()
-
-	// data seeding process
-	seed.Exec()
 
 	ctx := context.Background()
 

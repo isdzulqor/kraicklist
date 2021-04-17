@@ -1,7 +1,20 @@
 package main
 
-import "kraicklist/infra/api"
+import (
+	"kraicklist/infra/api"
+	"kraicklist/infra/cli"
+	"kraicklist/infra/seed"
+)
 
 func main() {
-	api.Exec()
+	cmd := cli.ParseCommand()
+
+	switch cmd {
+	case cli.CmdApi:
+		api.Exec()
+	case cli.CmdSeed:
+		seed.Exec()
+	default:
+		cli.PrintDefault()
+	}
 }
