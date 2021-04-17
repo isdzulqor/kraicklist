@@ -33,5 +33,3 @@ COPY --from=builder /app /app
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 EXPOSE 7000
-
-ENTRYPOINT ["/app"]

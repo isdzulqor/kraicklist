@@ -1,0 +1,20 @@
+version: "2.3"
+
+services:
+  kraicklist_app:
+    build: .
+    ports:
+      - 7000:7000
+    restart: on-failure
+    networks: 
+      - kraicklist_network
+    command: sh -c "./app seed && ./app api"
+    environment: 
+      - PORT=7000
+      - LOG_LEVEL=DEBUG
+      - ADVERTISEMENT_MASTER_DATA_PATH=./data/data.gz
+      - ADVERTISEMENT_BLEVE_INDEX_NAME=kraicklist.bleve
+
+networks:
+  kraicklist_network:
+    driver: bridge
