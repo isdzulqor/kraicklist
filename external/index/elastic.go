@@ -42,14 +42,18 @@ type ElasticRootQuery struct {
 func (e *ElasticRootQuery) ConstructElasticMultiMatchQuery(query string, fields ...string) {
 	e.Query = map[string]interface{}{
 		"multi_match": ElasticMultiMatchQuery{
-			Query:  query,
-			Fields: fields,
+			Query:        query,
+			Fields:       fields,
+			Fuzziness:    "AUTO", // TODO: revisit for flexibility
+			PrefixLength: 2,      // TODO: revisit for flexibility, The number of initial characters which will not be “fuzzified”
 		}}
 }
 
 type ElasticMultiMatchQuery struct {
-	Query  string   `json:"query"`
-	Fields []string `json:"fields"`
+	Query        string   `json:"query"`
+	Fields       []string `json:"fields"`
+	Fuzziness    string   `json:"fuzziness"`
+	PrefixLength int      `json:"prefix_length"`
 }
 
 type ElasticQueryResult struct {
