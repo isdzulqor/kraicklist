@@ -105,6 +105,12 @@ func seedDataWithElastic(ctx context.Context, ads model.Advertisements, conf *co
 		logging.FatalContext(ctx, "%v", err)
 	}
 
+	// check es7 cluster readiness with retry
+	if err = esIndex.PingWithRetry(conf.Advertisement.Elastic.PingRetry,
+		conf.Advertisement.Elastic.PingWaitTime); err != nil {
+		logging.WarnContext(ctx, "%v", err)
+	}
+
 	if err = esIndex.DeleteIndex(ctx); err != nil {
 		logging.WarnContext(ctx, "%v", err)
 	}

@@ -30,6 +30,9 @@ type Config struct {
 			Username  string   `envconfig:"ADVERTISEMENT_ELASTIC_USERNAME"`
 			Password  string   `envconfig:"ADVERTISEMENT_ELASTIC_PASSWORD"`
 			IndexName string   `envconfig:"ADVERTISEMENT_ELASTIC_INDEX_NAME" default:"kraicklist-dev"`
+
+			PingRetry    int           `envconfig:"ADVERTISEMENT_ELASTIC_PING_RETRY" default:"10"`
+			PingWaitTime time.Duration `envconfig:"ADVERTISEMENT_ELASTIC_PING_WAIT_TIME" default:"5s"`
 		}
 	}
 }

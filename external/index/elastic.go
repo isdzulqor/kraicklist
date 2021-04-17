@@ -248,3 +248,18 @@ func (es *ElasticIndex) Ping() error {
 	}
 	return nil
 }
+
+func (es *ElasticIndex) PingWithRetry(retry int, waitTime time.Duration) (err error) {
+	ctx := context.Background()
+	for i := retry; i > 0; i-- {
+		if err = es.Ping(); err == nil || i == 1 {
+			break
+		}
+		logging.WarnContext(ctx, "can't ping to elastic cluster, Wait 5 seconds. %d retries left...", i-1)
+		time.Sleep(5 * time.Second)
+	}
+	if err == nil {
+		logging.DebugContext(ctx, "successfully ping to elastic cluster")
+	}
+	return
+}
