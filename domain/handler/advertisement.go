@@ -26,7 +26,7 @@ func (h *Advertisement) SearchAds(w http.ResponseWriter, r *http.Request) {
 
 	keyword := r.FormValue("q")
 	if keyword == "" {
-		err := errors.ErrorParamInvalid.AppendMessage("q is necessary.")
+		err := errors.ErrorParamInvalid.AppendMessage("q param is necessary.")
 		response.Failed(ctx, w, errors.GetStatusCode(err), err)
 		return
 	}
