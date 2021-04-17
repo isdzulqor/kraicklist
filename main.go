@@ -6,6 +6,7 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"fmt"
+	"kraicklist/domain/model"
 	"log"
 	"net/http"
 	"os"
@@ -15,7 +16,7 @@ import (
 func main() {
 	// initialize searcher
 	searcher := &Searcher{}
-	err := searcher.Load("data.gz")
+	err := searcher.Load("./data/data.gz")
 	if err != nil {
 		log.Fatalf("unable to load search data due: %v", err)
 	}
@@ -46,8 +47,8 @@ func handleSearch(s *Searcher) http.HandlerFunc {
 				w.Write([]byte("missing search query in query params"))
 				return
 			}
-			// search relevant records
-			records, err := s.Search(q)
+			// search relevant ads
+			ads, err := s.Search(q)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write([]byte(err.Error()))
@@ -56,7 +57,7 @@ func handleSearch(s *Searcher) http.HandlerFunc {
 			// output success response
 			buf := new(bytes.Buffer)
 			encoder := json.NewEncoder(buf)
-			encoder.Encode(records)
+			encoder.Encode(ads)
 			w.Header().Set("Content-Type", "application/json")
 			w.Write(buf.Bytes())
 		},
@@ -64,7 +65,7 @@ func handleSearch(s *Searcher) http.HandlerFunc {
 }
 
 type Searcher struct {
-	records []Record
+	ads model.Advertisements
 }
 
 func (s *Searcher) Load(filepath string) error {
@@ -79,38 +80,28 @@ func (s *Searcher) Load(filepath string) error {
 	if err != nil {
 		return fmt.Errorf("unable to initialize gzip reader due: %v", err)
 	}
-	// read the reader using scanner to contstruct records
-	var records []Record
+	// read the reader using scanner to contstruct ads
+	var ads model.Advertisements
 	cs := bufio.NewScanner(reader)
 	for cs.Scan() {
-		var r Record
+		var r model.Advertisement
 		err = json.Unmarshal(cs.Bytes(), &r)
 		if err != nil {
 			continue
 		}
-		records = append(records, r)
+		ads = append(ads, r)
 	}
-	s.records = records
+	s.ads = ads
 
 	return nil
 }
 
-func (s *Searcher) Search(query string) ([]Record, error) {
-	var result []Record
-	for _, record := range s.records {
+func (s *Searcher) Search(query string) (model.Advertisements, error) {
+	var result model.Advertisements
+	for _, record := range s.ads {
 		if strings.Contains(record.Title, query) || strings.Contains(record.Content, query) {
 			result = append(result, record)
 		}
 	}
 	return result, nil
-}
-
-type Record struct {
-	ID        int64    `json:"id"`
-	Title     string   `json:"title"`
-	Content   string   `json:"content"`
-	ThumbURL  string   `json:"thumb_url"`
-	Tags      []string `json:"tags"`
-	UpdatedAt int64    `json:"updated_at"`
-	ImageURLs []string `json:"image_urls"`
 }
