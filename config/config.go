@@ -15,10 +15,18 @@ type Config struct {
 	LogLevel string `envconfig:"LOG_LEVEL" default:"INFO"` // DEBUG | INFO | WARN | ERROR
 
 	Advertisement struct {
+		Indexer        string `envconfig:"ADVERTISEMENT_INDEXER" default:"bleve"` // bleve | elastic
 		MasterDataPath string `envconfig:"ADVERTISEMENT_MASTER_DATA_PATH" default:"./data/data.gz"`
 
 		Bleve struct {
 			IndexName string `envconfig:"ADVERTISEMENT_BLEVE_INDEX_NAME" default:"kraicklist.bleve"`
+		}
+
+		Elastic struct {
+			Host      []string `envconfig:"ADVERTISEMENT_ELASTIC_HOST" default:"http://localhost:9200"`
+			Username  string   `envconfig:"ADVERTISEMENT_ELASTIC_USERNAME"`
+			Password  string   `envconfig:"ADVERTISEMENT_ELASTIC_PASSWORD"`
+			IndexName string   `envconfig:"ADVERTISEMENT_ELASTIC_INDEX_NAME" default:"kraicklist-dev"`
 		}
 	}
 }

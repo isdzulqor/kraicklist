@@ -20,14 +20,34 @@ func Exec() {
 
 	logging.Init(strings.ToUpper(conf.LogLevel))
 
-	// initilize dependencies
-	bleveIndex, err := index.InitBleveIndex(ctx, conf.Advertisement.Bleve.IndexName)
-	if err != nil {
-		logging.FatalContext(ctx, "%v", err)
-	}
+	var (
+		err error
 
+		bleveIndex   *index.BleveIndex
+		elasticIndex *index.ElasticIndex
+	)
+
+	// initialize dependencies
+	switch conf.Advertisement.Indexer {
+	case index.IndexBleve:
+		bleveIndex, err = index.InitBleveIndex(ctx, conf.Advertisement.Bleve.IndexName)
+		if err != nil {
+			logging.FatalContext(ctx, "%v", err)
+		}
+	case index.IndexElastic:
+		elasticIndex, err = index.InitESIndex(ctx,
+			conf.Advertisement.Elastic.Host,
+			conf.Advertisement.Elastic.Username,
+			conf.Advertisement.Elastic.Password,
+			conf.Advertisement.Elastic.IndexName)
+		if err != nil {
+			logging.FatalContext(ctx, "%v", err)
+		}
+	default:
+		logging.FatalContext(ctx, "Indexer for %s is invalid", conf.Advertisement.Indexer)
+	}
 	// initialize repo
-	adRepo := repository.InitAdvertisement(conf, bleveIndex)
+	adRepo := repository.InitAdvertisement(conf, bleveIndex, elasticIndex)
 
 	// initialize service
 	adService := service.InitAdvertisement(adRepo)

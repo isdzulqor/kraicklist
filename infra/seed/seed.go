@@ -16,6 +16,7 @@ import (
 
 func Exec() {
 	conf := config.Get()
+	conf.PrintPretty()
 
 	ctx := context.Background()
 
@@ -28,10 +29,16 @@ func Exec() {
 		logging.FatalContext(ctx, "%v", err)
 	}
 
-	seedDataWithBleve(ctx, ads, conf)
+	switch conf.Advertisement.Indexer {
+	case index.IndexBleve:
+		seedDataWithBleve(ctx, ads, conf)
+	case index.IndexElastic:
+		seedDataWithElastic(ctx, ads, conf)
+	default:
+		logging.FatalContext(ctx, "Indexer for %s is invalid", conf.Advertisement.Indexer)
+	}
 
 	logging.InfoContext(ctx, "data seed is finished")
-	return
 }
 
 func loadAdsData(filePath string) (out model.Advertisements, err error) {
@@ -83,5 +90,36 @@ func seedDataWithBleve(ctx context.Context, ads model.Advertisements, conf *conf
 
 	if err := bleveIndex.Close(); err != nil {
 		logging.ErrContext(ctx, "%v", err)
+	}
+}
+
+func seedDataWithElastic(ctx context.Context, ads model.Advertisements, conf *config.Config) {
+	logging.InfoContext(ctx, "data seeding with elastic index...")
+
+	esIndex, err := index.InitESIndex(ctx,
+		conf.Advertisement.Elastic.Host,
+		conf.Advertisement.Elastic.Username,
+		conf.Advertisement.Elastic.Password,
+		conf.Advertisement.Elastic.IndexName)
+	if err != nil {
+		logging.FatalContext(ctx, "%v", err)
+	}
+
+	if err = esIndex.DeleteIndex(ctx); err != nil {
+		logging.WarnContext(ctx, "%v", err)
+	}
+
+	docs, err := ads.ToElasticDocs()
+	if err != nil {
+		logging.FatalContext(ctx, "%v", err)
+		return
+	}
+
+	docErrors, err := esIndex.BulkIndexDocs(ctx, docs)
+	if err != nil {
+		logging.ErrContext(ctx, "%v", err)
+	}
+	if docErrors != nil {
+		logging.ErrContext(ctx, "%v", docErrors.ToError())
 	}
 }

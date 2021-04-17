@@ -30,3 +30,17 @@ func (ads Advertisements) ToBleveDocs() (out index.BleveDocs, err error) {
 	}
 	return
 }
+
+func (ads Advertisements) ToElasticDocs() (out index.ElasticDocs, err error) {
+	if len(ads) == 0 {
+		err = fmt.Errorf("no ads to be converted to elastic docs")
+		return
+	}
+	for _, ad := range ads {
+		out = append(out, index.ElasticDoc{
+			ID:   fmt.Sprint(ad.ID),
+			Data: ad,
+		})
+	}
+	return
+}
