@@ -238,3 +238,13 @@ func (es *ElasticIndex) DeleteIndex(ctx context.Context) (err error) {
 	defer res.Body.Close()
 	return
 }
+
+func (es *ElasticIndex) Ping() error {
+	_, err := es.esClient.Cluster.Health()
+	if err != nil {
+		err = fmt.Errorf("%s %v", prefixElastic, err)
+		logging.ErrContext(context.Background(), "%v", err)
+		return err
+	}
+	return nil
+}

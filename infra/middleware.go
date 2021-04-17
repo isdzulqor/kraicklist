@@ -3,6 +3,7 @@ package infra
 import (
 	"context"
 	"kraicklist/helper/errors"
+	"kraicklist/helper/health"
 	"kraicklist/helper/logging"
 	"kraicklist/helper/reqid"
 	"kraicklist/helper/response"
@@ -54,6 +55,21 @@ func LoggingHandler(next http.Handler) http.Handler {
 		}
 		logging.InfoContext(ctx, "Response "+r.Method+" "+r.URL.Path+" took "+time.Since(start).String())
 	})
+}
+
+// CheckShuttingDown works as middleware
+// will check shuttingDown status (already received SIGTERM signal) on each incoming request
+func CheckShuttingDown(healthHandler health.HealthHandler) func(next http.Handler) http.Handler {
+	return func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if isShuttingDown, resp := healthHandler.IsShuttingDown(); isShuttingDown {
+				response.Failed(r.Context(), w, http.StatusServiceUnavailable,
+					errors.ErrorServiceUnavailable.AppendMessage(resp.Message))
+				return
+			}
+			h.ServeHTTP(w, r)
+		})
+	}
 }
 
 type responseLog struct {

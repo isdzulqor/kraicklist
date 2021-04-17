@@ -15,10 +15,14 @@ func createRouter(ctx context.Context, rootHandler handler.Root) http.Handler {
 	// setup middlewares
 	router.Use(infra.LoggingHandler)
 	router.Use(infra.RecoverHandler)
+	router.Use(infra.CheckShuttingDown(*rootHandler.Health))
 
 	// UI static
 	fs := http.FileServer(http.Dir("./static"))
 	router.Handle("/", fs)
+
+	// healthcheck endpoint
+	router.HandleFunc("/health", rootHandler.Health.GetHealth).Methods("GET")
 
 	// API serve
 	api := router.PathPrefix("/api").Subrouter()

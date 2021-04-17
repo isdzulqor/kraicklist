@@ -7,7 +7,9 @@ import (
 	"kraicklist/domain/repository"
 	"kraicklist/domain/service"
 	"kraicklist/external/index"
+	"kraicklist/helper/health"
 	"kraicklist/helper/logging"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -46,6 +48,7 @@ func Exec() {
 	default:
 		logging.FatalContext(ctx, "Indexer for %s is invalid", conf.Advertisement.Indexer)
 	}
+
 	// initialize repo
 	adRepo := repository.InitAdvertisement(conf, bleveIndex, elasticIndex)
 
@@ -54,8 +57,21 @@ func Exec() {
 
 	// initialize handlers
 	adHandler := handler.InitAdvertisement(conf, adService)
+
+	// initialize health
+	healthPersistences := health.Persistences{
+		health.NewPersistence(conf.Advertisement.Elastic.IndexName,
+			conf.Advertisement.Indexer, elasticIndex),
+	}
+	healthHandler, err := health.NewHealthHandler(&healthPersistences, conf.GracefulShutdownTimeout)
+	if err != nil {
+		log.Fatal("failed to init healthHandler")
+	}
+	healthHandler.WithToken(conf.HealthToken)
+
 	rootHandler := handler.Root{
 		Advertisement: adHandler,
+		Health:        healthHandler,
 	}
 
 	// starting server

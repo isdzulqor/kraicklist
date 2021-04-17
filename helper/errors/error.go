@@ -37,9 +37,18 @@ func GetCodeFromError(in error) string {
 }
 
 func (e Error) AppendMessage(in ...string) Error {
-	for _, s := range in {
+	for i, s := range in {
+		if i == 0 {
+			e.Message = s
+			continue
+		}
 		e.Message = strings.TrimSpace(e.Message + ". " + s)
 	}
+	return e
+}
+
+func (e Error) SetData(data interface{}) Error {
+	e.Data = data
 	return e
 }
 
