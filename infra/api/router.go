@@ -27,5 +27,6 @@ func createRouter(ctx context.Context, rootHandler handler.Root) http.Handler {
 	// API serve
 	api := router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/advertisement/search", rootHandler.Advertisement.SearchAds).Methods("GET")
+	api.HandleFunc("/advertisement/index", rootHandler.Advertisement.IndexAds).Methods("POST")
 	return router
 }
