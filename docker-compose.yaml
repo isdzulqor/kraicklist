@@ -12,13 +12,13 @@ services:
     environment: 
       - PORT=7000
       - LOG_LEVEL=DEBUG
-      - ADVERTISEMENT_INDEXER=elastic
+      - INDEXER_ACTIVATED=elastic
       - ADVERTISEMENT_MASTER_DATA_PATH=./data/data.gz
       - ADVERTISEMENT_BLEVE_INDEX_NAME=kraicklist.bleve
-      - ADVERTISEMENT_ELASTIC_HOST=http://elastic_search:9200
-      - ADVERTISEMENT_ELASTIC_USERNAME=elastic
-      - ADVERTISEMENT_ELASTIC_PASSWORD=elastic-password
       - ADVERTISEMENT_ELASTIC_INDEX_NAME=kraicklist-dev
+      - ELASTIC_HOST=http://elastic_search:9200
+      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=elastic-password
   
   elastic_search:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0

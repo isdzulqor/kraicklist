@@ -18,7 +18,6 @@ type Config struct {
 	HealthToken             string        `envconfig:"HEALTH_TOKEN" default:"health-token"`
 
 	Advertisement struct {
-		Indexer        string `envconfig:"ADVERTISEMENT_INDEXER" default:"bleve"` // bleve | elastic
 		MasterDataPath string `envconfig:"ADVERTISEMENT_MASTER_DATA_PATH" default:"./data/data.gz"`
 
 		Bleve struct {
@@ -26,14 +25,19 @@ type Config struct {
 		}
 
 		Elastic struct {
-			Host      []string `envconfig:"ADVERTISEMENT_ELASTIC_HOST" default:"http://localhost:9200"`
-			Username  string   `envconfig:"ADVERTISEMENT_ELASTIC_USERNAME"`
-			Password  string   `envconfig:"ADVERTISEMENT_ELASTIC_PASSWORD"`
-			IndexName string   `envconfig:"ADVERTISEMENT_ELASTIC_INDEX_NAME" default:"kraicklist-dev"`
-
-			PingRetry    int           `envconfig:"ADVERTISEMENT_ELASTIC_PING_RETRY" default:"10"`
-			PingWaitTime time.Duration `envconfig:"ADVERTISEMENT_ELASTIC_PING_WAIT_TIME" default:"5s"`
+			IndexName string `envconfig:"ADVERTISEMENT_ELASTIC_INDEX_NAME" default:"kraicklist-dev"`
 		}
+	}
+
+	IndexerActivated string `envconfig:"INDEXER_ACTIVATED" default:"bleve"` // bleve | elastic
+
+	Elastic struct {
+		Host     []string `envconfig:"ELASTIC_HOST" default:"http://localhost:9200"`
+		Username string   `envconfig:"ELASTIC_USERNAME"`
+		Password string   `envconfig:"ELASTIC_PASSWORD"`
+
+		PingRetry    int           `envconfig:"ELASTIC_PING_RETRY" default:"10"`
+		PingWaitTime time.Duration `envconfig:"ELASTIC_PING_WAIT_TIME" default:"5s"`
 	}
 }
 

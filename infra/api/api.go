@@ -42,7 +42,7 @@ func initDependencies(ctx context.Context, conf *config.Config) handler.Root {
 	)
 
 	// indexer check
-	switch conf.Advertisement.Indexer {
+	switch conf.IndexerActivated {
 	case index.IndexBleve:
 		bleveIndex, err = index.InitBleveIndex(ctx, conf.Advertisement.Bleve.IndexName)
 		if err != nil {
@@ -50,9 +50,9 @@ func initDependencies(ctx context.Context, conf *config.Config) handler.Root {
 		}
 	case index.IndexElastic:
 		elasticIndex, err = index.InitESIndex(ctx,
-			conf.Advertisement.Elastic.Host,
-			conf.Advertisement.Elastic.Username,
-			conf.Advertisement.Elastic.Password,
+			conf.Elastic.Host,
+			conf.Elastic.Username,
+			conf.Elastic.Password,
 			conf.Advertisement.Elastic.IndexName)
 		if err != nil {
 			logging.FatalContext(ctx, "%v", err)
@@ -60,9 +60,9 @@ func initDependencies(ctx context.Context, conf *config.Config) handler.Root {
 		// append health persistence
 		healthPersistences = append(healthPersistences,
 			health.NewPersistence(conf.Advertisement.Elastic.IndexName,
-				conf.Advertisement.Indexer, elasticIndex))
+				conf.IndexerActivated, elasticIndex))
 	default:
-		logging.FatalContext(ctx, "Indexer for %s is invalid", conf.Advertisement.Indexer)
+		logging.FatalContext(ctx, "Indexer for %s is invalid", conf.IndexerActivated)
 	}
 
 	// initialize repo

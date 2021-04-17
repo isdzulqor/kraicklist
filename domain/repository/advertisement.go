@@ -24,7 +24,7 @@ func InitAdvertisement(conf *config.Config, bleveIndex *index.BleveIndex, esInde
 }
 
 func (ad *Advertisement) SearchAds(ctx context.Context, query string) (out model.Advertisements, err error) {
-	if ad.conf.Advertisement.Indexer == index.IndexElastic {
+	if ad.conf.IndexerActivated == index.IndexElastic {
 		esQuery := index.ElasticRootQuery{}
 		esQuery.ConstructElasticMultiMatchQuery(query, "title", "content", "tags")
 		if _, err = ad.esIndex.SearchQuery(ctx, esQuery, &out); err != nil {
@@ -45,7 +45,7 @@ func (ad *Advertisement) IndexAds(ctx context.Context, in model.Advertisements) 
 		bleveDocs   index.BleveDocs
 	)
 	// indexing using elastic
-	if ad.conf.Advertisement.Indexer == index.IndexElastic {
+	if ad.conf.IndexerActivated == index.IndexElastic {
 		if elasticDocs, err = in.ToElasticDocs(); err != nil {
 			err = fmt.Errorf("failed to convert to elasticDocs, err:%v", err)
 			return

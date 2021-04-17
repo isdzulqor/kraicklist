@@ -29,13 +29,13 @@ func Exec() {
 		logging.FatalContext(ctx, "%v", err)
 	}
 
-	switch conf.Advertisement.Indexer {
+	switch conf.IndexerActivated {
 	case index.IndexBleve:
 		seedDataWithBleve(ctx, ads, conf)
 	case index.IndexElastic:
 		seedDataWithElastic(ctx, ads, conf)
 	default:
-		logging.FatalContext(ctx, "Indexer for %s is invalid", conf.Advertisement.Indexer)
+		logging.FatalContext(ctx, "Indexer for %s is invalid", conf.IndexerActivated)
 	}
 
 	logging.InfoContext(ctx, "data seed is finished")
@@ -97,17 +97,17 @@ func seedDataWithElastic(ctx context.Context, ads model.Advertisements, conf *co
 	logging.InfoContext(ctx, "data seeding with elastic index...")
 
 	esIndex, err := index.InitESIndex(ctx,
-		conf.Advertisement.Elastic.Host,
-		conf.Advertisement.Elastic.Username,
-		conf.Advertisement.Elastic.Password,
+		conf.Elastic.Host,
+		conf.Elastic.Username,
+		conf.Elastic.Password,
 		conf.Advertisement.Elastic.IndexName)
 	if err != nil {
 		logging.FatalContext(ctx, "%v", err)
 	}
 
 	// check es7 cluster readiness with retry
-	if err = esIndex.PingWithRetry(conf.Advertisement.Elastic.PingRetry,
-		conf.Advertisement.Elastic.PingWaitTime); err != nil {
+	if err = esIndex.PingWithRetry(conf.Elastic.PingRetry,
+		conf.Elastic.PingWaitTime); err != nil {
 		logging.WarnContext(ctx, "%v", err)
 	}
 
