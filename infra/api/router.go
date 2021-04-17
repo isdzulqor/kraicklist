@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"kraicklist/domain/handler"
+	"kraicklist/infra"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -10,6 +11,10 @@ import (
 
 func createRouter(ctx context.Context, rootHandler handler.Root) http.Handler {
 	router := mux.NewRouter()
+
+	// setup middlewares
+	router.Use(infra.LoggingHandler)
+	router.Use(infra.RecoverHandler)
 
 	// UI static
 	fs := http.FileServer(http.Dir("./static"))
