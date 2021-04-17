@@ -1,0 +1,41 @@
+version: "2.3"
+
+services:
+  kraicklist_app:
+    build: .
+    ports:
+      - 7000:7000
+    restart: on-failure
+    networks: 
+      - kraicklist_network
+    command: sh -c "./app api"
+    environment: 
+      - PORT=7000
+      - LOG_LEVEL=DEBUG
+      - INDEXER_ACTIVATED=elastic
+      - ADVERTISEMENT_MASTER_DATA_PATH=./data/data.gz
+      - ADVERTISEMENT_BLEVE_INDEX_NAME=kraicklist.bleve
+      - ADVERTISEMENT_ELASTIC_INDEX_NAME=kraicklist-dev
+      - ELASTIC_HOST=http://elastic_search:9200
+      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=elastic-password
+  
+  elastic_search:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    restart: on-failure
+    networks:
+      - kraicklist_network
+    environment:
+      - discovery.type=single-node
+
+volumes:
+  data01:
+    driver: local
+
+networks:
+  kraicklist_network:
+    driver: bridge
