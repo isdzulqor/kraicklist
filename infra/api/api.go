@@ -9,7 +9,6 @@ import (
 	"kraicklist/external/index"
 	"kraicklist/helper/health"
 	"kraicklist/helper/logging"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -22,6 +21,17 @@ func Exec() {
 
 	logging.Init(strings.ToUpper(conf.LogLevel))
 
+	handlers := initDependencies(ctx, conf)
+
+	// starting server
+	logging.InfoContext(ctx, "Starting HTTP on port %s", conf.Port)
+	router := createRouter(ctx, handlers)
+	if err := http.ListenAndServe(":"+conf.Port, router); err != nil {
+		logging.FatalContext(ctx, "Failed starting HTTP - %v", err)
+	}
+}
+
+func initDependencies(ctx context.Context, conf *config.Config) handler.Root {
 	var (
 		err error
 
@@ -29,7 +39,7 @@ func Exec() {
 		elasticIndex *index.ElasticIndex
 	)
 
-	// initialize dependencies
+	// indexer check
 	switch conf.Advertisement.Indexer {
 	case index.IndexBleve:
 		bleveIndex, err = index.InitBleveIndex(ctx, conf.Advertisement.Bleve.IndexName)
@@ -65,19 +75,12 @@ func Exec() {
 	}
 	healthHandler, err := health.NewHealthHandler(&healthPersistences, conf.GracefulShutdownTimeout)
 	if err != nil {
-		log.Fatal("failed to init healthHandler")
+		logging.FatalContext(ctx, "failed to init healthHandler")
 	}
 	healthHandler.WithToken(conf.HealthToken)
 
-	rootHandler := handler.Root{
+	return handler.Root{
 		Advertisement: adHandler,
 		Health:        healthHandler,
-	}
-
-	// starting server
-	logging.InfoContext(ctx, "Starting HTTP on port %s", conf.Port)
-	router := createRouter(ctx, rootHandler)
-	if err := http.ListenAndServe(":"+conf.Port, router); err != nil {
-		logging.FatalContext(ctx, "Failed starting HTTP - %v", err)
 	}
 }

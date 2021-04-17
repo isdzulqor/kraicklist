@@ -1,10 +1,11 @@
 package health
 
 import (
+	"context"
 	"fmt"
 	"kraicklist/helper/errors"
+	"kraicklist/helper/logging"
 	"kraicklist/helper/response"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -77,11 +78,11 @@ func (h HealthHandler) gracefulShutdown() {
 
 func (h HealthHandler) listenToSigTerm(stopChan chan os.Signal) {
 	<-stopChan
-	log.Println("Shutting down service... Will be killed on", h.shutdownDelayDuration)
+	ctx := context.Background()
+	logging.InfoContext(ctx, "Shutting down service... Will be killed on %s", h.shutdownDelayDuration)
 	isShuttingDown = true
-
 	time.Sleep(h.shutdownDelayDuration)
-	log.Println("Bye..")
+	logging.InfoContext(ctx, "Bye...")
 	os.Exit(0)
 }
 
