@@ -128,3 +128,10 @@ func (index *BleveIndex) BulkIndex(ctx context.Context, docs BleveDocs) (docErro
 	}
 	return
 }
+
+func (index *BleveIndex) Close() error {
+	if err := index.clientIndex.Close(); err != nil {
+		return fmt.Errorf("%s %v", prefixBleve, err)
+	}
+	return nil
+}

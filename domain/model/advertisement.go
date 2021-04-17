@@ -1,5 +1,10 @@
 package model
 
+import (
+	"fmt"
+	"kraicklist/external/index"
+)
+
 type Advertisement struct {
 	ID        int64       `json:"id"`
 	Title     string      `json:"title"`
@@ -11,3 +16,17 @@ type Advertisement struct {
 }
 
 type Advertisements []Advertisement
+
+func (ads Advertisements) ToBleveDocs() (out index.BleveDocs, err error) {
+	if len(ads) == 0 {
+		err = fmt.Errorf("no ads to be converted to bleve docs")
+		return
+	}
+	for _, ad := range ads {
+		out = append(out, index.BleveDoc{
+			ID:   fmt.Sprint(ad.ID),
+			Data: ad,
+		})
+	}
+	return
+}

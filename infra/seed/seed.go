@@ -8,12 +8,13 @@ import (
 	"fmt"
 	"kraicklist/config"
 	"kraicklist/domain/model"
+	"kraicklist/external/index"
 	"kraicklist/helper/logging"
 	"os"
 	"strings"
 )
 
-func Exec() model.Advertisements {
+func Exec() {
 	conf := config.Get()
 
 	ctx := context.Background()
@@ -27,8 +28,10 @@ func Exec() model.Advertisements {
 		logging.FatalContext(ctx, "%v", err)
 	}
 
+	seedDataWithBleve(ctx, ads, conf)
+
 	logging.InfoContext(ctx, "data seed is finished")
-	return ads
+	return
 }
 
 func loadAdsData(filePath string) (out model.Advertisements, err error) {
@@ -58,4 +61,27 @@ func loadAdsData(filePath string) (out model.Advertisements, err error) {
 		out = append(out, ad)
 	}
 	return
+}
+
+func seedDataWithBleve(ctx context.Context, ads model.Advertisements, conf *config.Config) {
+	logging.InfoContext(ctx, "data seeding with bleve index...")
+
+	bleveIndex, err := index.InitBleveIndex(ctx, conf.Advertisement.Bleve.IndexName)
+	if err != nil {
+		logging.FatalContext(ctx, "%v", err)
+	}
+
+	docs, err := ads.ToBleveDocs()
+	if err != nil {
+		logging.FatalContext(ctx, "%v", err)
+		return
+	}
+
+	if docErrors := bleveIndex.BulkIndex(ctx, docs); docErrors != nil {
+		logging.ErrContext(ctx, "%v", docErrors.ToError())
+	}
+
+	if err := bleveIndex.Close(); err != nil {
+		logging.ErrContext(ctx, "%v", err)
+	}
 }

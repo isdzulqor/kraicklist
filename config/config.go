@@ -16,6 +16,10 @@ type Config struct {
 
 	Advertisement struct {
 		MasterDataPath string `envconfig:"ADVERTISEMENT_MASTER_DATA_PATH" default:"./data/data.gz"`
+
+		Bleve struct {
+			IndexName string `envconfig:"ADVERTISEMENT_BLEVE_INDEX_NAME" default:"kraicklist.bleve"`
+		}
 	}
 }
 

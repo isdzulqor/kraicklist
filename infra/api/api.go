@@ -6,6 +6,7 @@ import (
 	"kraicklist/domain/handler"
 	"kraicklist/domain/repository"
 	"kraicklist/domain/service"
+	"kraicklist/external/index"
 	"kraicklist/helper/logging"
 	"kraicklist/infra/seed"
 	"net/http"
@@ -16,15 +17,21 @@ func Exec() {
 	conf := config.Get()
 	conf.PrintPretty()
 
+	// data seeding process
+	seed.Exec()
+
 	ctx := context.Background()
 
 	logging.Init(strings.ToUpper(conf.LogLevel))
 
-	// data seeding
-	adsData := seed.Exec()
+	// initilize dependencies
+	bleveIndex, err := index.InitBleveIndex(ctx, conf.Advertisement.Bleve.IndexName)
+	if err != nil {
+		logging.FatalContext(ctx, "%v", err)
+	}
 
 	// initialize repo
-	adRepo := repository.InitAdvertisement(conf, &adsData)
+	adRepo := repository.InitAdvertisement(conf, bleveIndex)
 
 	// initialize service
 	adService := service.InitAdvertisement(adRepo)

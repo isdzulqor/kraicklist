@@ -4,27 +4,25 @@ import (
 	"context"
 	"kraicklist/config"
 	"kraicklist/domain/model"
-	"strings"
+	"kraicklist/external/index"
 )
 
 type Advertisement struct {
 	conf *config.Config
 
-	adsData *model.Advertisements
+	bleveIndex *index.BleveIndex
 }
 
-func InitAdvertisement(conf *config.Config, adsData *model.Advertisements) *Advertisement {
+func InitAdvertisement(conf *config.Config, bleveIndex *index.BleveIndex) *Advertisement {
 	return &Advertisement{
-		conf:    conf,
-		adsData: adsData,
+		conf:       conf,
+		bleveIndex: bleveIndex,
 	}
 }
 
 func (ad *Advertisement) SearchAds(ctx context.Context, query string) (out model.Advertisements, err error) {
-	for _, ad := range *ad.adsData {
-		if strings.Contains(ad.Title, query) || strings.Contains(ad.Content, query) {
-			out = append(out, ad)
-		}
+	if _, err = ad.bleveIndex.SearchQuery(ctx, query, &out); err != nil {
+		// TODO: error mapping
 	}
 	return
 }
