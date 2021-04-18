@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"math/rand"
 	"net/http"
 	"strings"
 	"testing"
@@ -64,13 +63,13 @@ func (suite *IntegrationTestSuite) TestSeedAndSearch() {
 	data := model.Advertisements{
 		model.Advertisement{
 			ID:      1,
-			Title:   randomizeString(10),
-			Content: randomizeString(100),
+			Title:   "this is title",
+			Content: "this is content",
 		},
 		model.Advertisement{
 			ID:      2,
-			Title:   randomizeString(10),
-			Content: randomizeString(100),
+			Title:   "absolute title",
+			Content: "absolute content",
 		},
 	}
 	result, err := suite.hitIndexDocs(data)
@@ -151,14 +150,6 @@ func (suite *IntegrationTestSuite) hitIndexDocs(adsData model.Advertisements) (d
 }
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-func randomizeString(n int) string {
-	b := make([]byte, n)
-	for i := range b {
-		b[i] = letterBytes[rand.Intn(len(letterBytes))]
-	}
-	return string(b)
-}
 
 func readerToString(in io.Reader) string {
 	body, err := ioutil.ReadAll(in)
