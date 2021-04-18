@@ -4,13 +4,13 @@ services:
   kraicklist_app:
     build: .
     ports:
-      - 7000:7000
+      - 7777:7777
     restart: on-failure
     networks: 
       - kraicklist_network
     command: sh -c "./app api"
     environment: 
-      - PORT=7000
+      - PORT=7777
       - LOG_LEVEL=DEBUG
       - INDEXER_ACTIVATED=elastic
       - ADVERTISEMENT_MASTER_DATA_PATH=./data/data.gz
