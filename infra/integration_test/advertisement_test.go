@@ -3,8 +3,7 @@ package integration_test
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"strings"
 	"testing"
@@ -12,7 +11,6 @@ import (
 
 	"github.com/isdzulqor/kraicklist/config"
 	"github.com/isdzulqor/kraicklist/domain/model"
-	"github.com/isdzulqor/kraicklist/helper/errors"
 	"github.com/isdzulqor/kraicklist/helper/jsons"
 	"github.com/isdzulqor/kraicklist/helper/logging"
 
@@ -63,13 +61,13 @@ func (suite *IntegrationTestSuite) TestSeedAndSearch() {
 	data := model.Advertisements{
 		model.Advertisement{
 			ID:      1,
-			Title:   "this is title",
-			Content: "this is content",
+			Title:   randomizeString(10),
+			Content: randomizeString(100),
 		},
 		model.Advertisement{
 			ID:      2,
-			Title:   "absolute title",
-			Content: "absolute content",
+			Title:   randomizeString(10),
+			Content: randomizeString(100),
 		},
 	}
 	result, err := suite.hitIndexDocs(data)
@@ -116,7 +114,6 @@ func (suite *IntegrationTestSuite) hitSearch(q string) (adsResult model.Advertis
 
 	result := map[string]model.Advertisements{}
 	if err = json.NewDecoder(res.Body).Decode(&result); err != nil {
-		err = errors.WithMessage("hitSearch", err.Error()).AppendMessage(readerToString(res.Body))
 		return
 	}
 	adsResult = result["data"]
@@ -142,7 +139,6 @@ func (suite *IntegrationTestSuite) hitIndexDocs(adsData model.Advertisements) (d
 	defer res.Body.Close()
 	result := map[string]string{}
 	if err = json.NewDecoder(res.Body).Decode(&result); err != nil {
-		err = errors.WithMessage("hitIndexDocs", err.Error()).AppendMessage(readerToString(res.Body))
 		return
 	}
 	data = result["data"]
@@ -151,10 +147,10 @@ func (suite *IntegrationTestSuite) hitIndexDocs(adsData model.Advertisements) (d
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-func readerToString(in io.Reader) string {
-	body, err := ioutil.ReadAll(in)
-	if err != nil {
-		return err.Error()
+func randomizeString(n int) string {
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letterBytes[rand.Intn(len(letterBytes))]
 	}
-	return string(body)
+	return string(b)
 }

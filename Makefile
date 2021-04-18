@@ -19,6 +19,6 @@ all: clean-index seed dev
 integration-test:
 	@env PORT=7777 docker-compose -f docker-compose.test.yaml up $(build) -d
 	@echo "wait for ES to be ready..."
-	@sleep 25
+	@sleep 30
 	@-env PORT=7777 go test -v ./...
 	@docker-compose -f docker-compose.test.yaml down
