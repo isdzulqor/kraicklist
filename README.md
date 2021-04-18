@@ -7,6 +7,9 @@
       <a href="https://github.com/isdzulqor/kraicklist/actions?query=workflow%3A%22Build%22">
           <img src="https://github.com/isdzulqor/kraicklist/workflows/Build/badge.svg?branch=master"/>
       </a>
+      <a href="https://github.com/isdzulqor/kraicklist/actions?query=workflow%3A%22Test+Integration%22">
+        <img src="https://github.com/isdzulqor/kraicklist/workflows/Test Integration/badge.svg?branch=master"/>
+		  </a>
     </p>
 </div>
 
@@ -90,9 +93,7 @@
 - Use Docker
   ```
   # replace the YOUR_PATH_DATA with PATH on your host machine
-  $ docker run --env-file .env -p 7000:7000 \
-  -v YOUR_PATH_DATA:/data \
-  emboh/baru-jos-kraick sh -c "./app seed && ./app api"
+  $ docker run --env-file .env -p 7000:7000 -v YOUR_PATH_DATA:/data isdzulqor/kraicklist:latest sh -c "./app seed && ./app api"
   ```
 - Use Docker Compose
   ```
