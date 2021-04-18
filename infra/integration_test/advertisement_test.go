@@ -3,6 +3,8 @@ package integration_test
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"strings"
@@ -11,6 +13,7 @@ import (
 
 	"github.com/isdzulqor/kraicklist/config"
 	"github.com/isdzulqor/kraicklist/domain/model"
+	"github.com/isdzulqor/kraicklist/helper/errors"
 	"github.com/isdzulqor/kraicklist/helper/jsons"
 	"github.com/isdzulqor/kraicklist/helper/logging"
 
@@ -81,7 +84,7 @@ func (suite *IntegrationTestSuite) TestSeedAndSearch() {
 		adsResult, err := suite.hitSearch(adData.Title)
 		assert.NoError(suite.T(), err, "should not error out")
 		assert.NotEmpty(suite.T(), adsResult, "result should not be empty")
-		assert.Equal(suite.T(), adsResult[0].Title, adData.Title)
+		assert.Contains(suite.T(), adsResult[0].Title, adData.Title)
 	}
 }
 
@@ -114,6 +117,7 @@ func (suite *IntegrationTestSuite) hitSearch(q string) (adsResult model.Advertis
 
 	result := map[string]model.Advertisements{}
 	if err = json.NewDecoder(res.Body).Decode(&result); err != nil {
+		err = errors.WithMessage("hitSearch", err.Error()).AppendMessage(readerToString(res.Body))
 		return
 	}
 	adsResult = result["data"]
@@ -139,6 +143,7 @@ func (suite *IntegrationTestSuite) hitIndexDocs(adsData model.Advertisements) (d
 	defer res.Body.Close()
 	result := map[string]string{}
 	if err = json.NewDecoder(res.Body).Decode(&result); err != nil {
+		err = errors.WithMessage("hitIndexDocs", err.Error()).AppendMessage(readerToString(res.Body))
 		return
 	}
 	data = result["data"]
@@ -153,4 +158,12 @@ func randomizeString(n int) string {
 		b[i] = letterBytes[rand.Intn(len(letterBytes))]
 	}
 	return string(b)
+}
+
+func readerToString(in io.Reader) string {
+	body, err := ioutil.ReadAll(in)
+	if err != nil {
+		return err.Error()
+	}
+	return string(body)
 }
