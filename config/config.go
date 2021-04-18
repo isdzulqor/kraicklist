@@ -15,7 +15,7 @@ type Config struct {
 	Port                    string        `envconfig:"PORT" default:"7000"`
 	LogLevel                string        `envconfig:"LOG_LEVEL" default:"INFO"` // DEBUG | INFO | WARN | ERROR
 	GracefulShutdownTimeout time.Duration `envconfig:"GRACEFUL_SHUTDOWN_TIMEOUT" default:"0s"`
-	HealthToken             string        `envconfig:"HEALTH_TOKEN"`
+	HealthToken             string        `envconfig:"HEALTH_TOKEN" default:"health-token"`
 
 	Advertisement struct {
 		MasterDataPath string `envconfig:"ADVERTISEMENT_MASTER_DATA_PATH" default:"./data/data.gz"`

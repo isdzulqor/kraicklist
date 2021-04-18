@@ -7,7 +7,7 @@ services:
       - 7777:7777
     restart: on-failure
     networks: 
-      - kraicklist_network
+      - kraicklist_test_network
     command: sh -c "./app api"
     environment: 
       - PORT=7777
@@ -28,7 +28,7 @@ services:
       - 9200:9200
     restart: on-failure
     networks:
-      - kraicklist_network
+      - kraicklist_test_network
     environment:
       - discovery.type=single-node
 
@@ -37,5 +37,5 @@ volumes:
     driver: local
 
 networks:
-  kraicklist_network:
+  kraicklist_test_network:
     driver: bridge
