@@ -2,7 +2,8 @@ package model
 
 import (
 	"fmt"
-	"kraicklist/external/index"
+
+	"github.com/isdzulqor/kraicklist/external/index"
 )
 
 type Advertisement struct {

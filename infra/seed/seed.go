@@ -6,12 +6,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"kraicklist/config"
-	"kraicklist/domain/model"
-	"kraicklist/external/index"
-	"kraicklist/helper/logging"
 	"os"
 	"strings"
+
+	"github.com/isdzulqor/kraicklist/config"
+	"github.com/isdzulqor/kraicklist/domain/model"
+	"github.com/isdzulqor/kraicklist/external/index"
+	"github.com/isdzulqor/kraicklist/helper/logging"
 )
 
 func Exec() {

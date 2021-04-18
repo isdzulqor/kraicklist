@@ -2,9 +2,10 @@ package api
 
 import (
 	"context"
-	"kraicklist/domain/handler"
-	"kraicklist/infra"
 	"net/http"
+
+	"github.com/isdzulqor/kraicklist/domain/handler"
+	"github.com/isdzulqor/kraicklist/infra"
 
 	"github.com/gorilla/mux"
 )

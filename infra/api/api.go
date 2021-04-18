@@ -2,15 +2,16 @@ package api
 
 import (
 	"context"
-	"kraicklist/config"
-	"kraicklist/domain/handler"
-	"kraicklist/domain/repository"
-	"kraicklist/domain/service"
-	"kraicklist/external/index"
-	"kraicklist/helper/health"
-	"kraicklist/helper/logging"
 	"net/http"
 	"strings"
+
+	"github.com/isdzulqor/kraicklist/config"
+	"github.com/isdzulqor/kraicklist/domain/handler"
+	"github.com/isdzulqor/kraicklist/domain/repository"
+	"github.com/isdzulqor/kraicklist/domain/service"
+	"github.com/isdzulqor/kraicklist/external/index"
+	"github.com/isdzulqor/kraicklist/helper/health"
+	"github.com/isdzulqor/kraicklist/helper/logging"
 )
 
 func Exec() {

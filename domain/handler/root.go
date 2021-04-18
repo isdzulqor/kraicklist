@@ -1,6 +1,6 @@
 package handler
 
-import "kraicklist/helper/health"
+import "github.com/isdzulqor/kraicklist/helper/health"
 
 type Root struct {
 	Advertisement *Advertisement

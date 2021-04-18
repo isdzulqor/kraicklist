@@ -1,9 +1,9 @@
 package main
 
 import (
-	"kraicklist/infra/api"
-	"kraicklist/infra/cli"
-	"kraicklist/infra/seed"
+	"github.com/isdzulqor/kraicklist/infra/api"
+	"github.com/isdzulqor/kraicklist/infra/cli"
+	"github.com/isdzulqor/kraicklist/infra/seed"
 )
 
 func main() {

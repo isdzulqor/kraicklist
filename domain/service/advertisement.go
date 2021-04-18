@@ -2,8 +2,9 @@ package service
 
 import (
 	"context"
-	"kraicklist/domain/model"
-	"kraicklist/domain/repository"
+
+	"github.com/isdzulqor/kraicklist/domain/model"
+	"github.com/isdzulqor/kraicklist/domain/repository"
 )
 
 type Advertisement struct {

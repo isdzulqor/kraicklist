@@ -3,14 +3,15 @@ package health
 import (
 	"context"
 	"fmt"
-	"kraicklist/helper/errors"
-	"kraicklist/helper/logging"
-	"kraicklist/helper/response"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/isdzulqor/kraicklist/helper/errors"
+	"github.com/isdzulqor/kraicklist/helper/logging"
+	"github.com/isdzulqor/kraicklist/helper/response"
 )
 
 const (

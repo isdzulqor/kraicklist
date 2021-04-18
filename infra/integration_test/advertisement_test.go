@@ -3,15 +3,16 @@ package integration_test
 import (
 	"encoding/json"
 	"fmt"
-	"kraicklist/config"
-	"kraicklist/domain/model"
-	"kraicklist/helper/jsons"
-	"kraicklist/helper/logging"
 	"math/rand"
 	"net/http"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/isdzulqor/kraicklist/config"
+	"github.com/isdzulqor/kraicklist/domain/model"
+	"github.com/isdzulqor/kraicklist/helper/jsons"
+	"github.com/isdzulqor/kraicklist/helper/logging"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"

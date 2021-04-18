@@ -2,14 +2,15 @@ package infra
 
 import (
 	"context"
-	"kraicklist/helper/errors"
-	"kraicklist/helper/health"
-	"kraicklist/helper/logging"
-	"kraicklist/helper/reqid"
-	"kraicklist/helper/response"
-	"kraicklist/helper/uuid"
 	"net/http"
 	"time"
+
+	"github.com/isdzulqor/kraicklist/helper/errors"
+	"github.com/isdzulqor/kraicklist/helper/health"
+	"github.com/isdzulqor/kraicklist/helper/logging"
+	"github.com/isdzulqor/kraicklist/helper/reqid"
+	"github.com/isdzulqor/kraicklist/helper/response"
+	"github.com/isdzulqor/kraicklist/helper/uuid"
 )
 
 func RecoverHandler(next http.Handler) http.Handler {

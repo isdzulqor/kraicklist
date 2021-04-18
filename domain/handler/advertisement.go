@@ -2,13 +2,14 @@ package handler
 
 import (
 	"encoding/json"
-	"kraicklist/config"
-	"kraicklist/domain/model"
-	"kraicklist/domain/service"
-	"kraicklist/helper/errors"
-	"kraicklist/helper/logging"
-	"kraicklist/helper/response"
 	"net/http"
+
+	"github.com/isdzulqor/kraicklist/config"
+	"github.com/isdzulqor/kraicklist/domain/model"
+	"github.com/isdzulqor/kraicklist/domain/service"
+	"github.com/isdzulqor/kraicklist/helper/errors"
+	"github.com/isdzulqor/kraicklist/helper/logging"
+	"github.com/isdzulqor/kraicklist/helper/response"
 )
 
 type Advertisement struct {

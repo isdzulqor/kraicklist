@@ -3,9 +3,10 @@ package repository
 import (
 	"context"
 	"fmt"
-	"kraicklist/config"
-	"kraicklist/domain/model"
-	"kraicklist/external/index"
+
+	"github.com/isdzulqor/kraicklist/config"
+	"github.com/isdzulqor/kraicklist/domain/model"
+	"github.com/isdzulqor/kraicklist/external/index"
 )
 
 type Advertisement struct {

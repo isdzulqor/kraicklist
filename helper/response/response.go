@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"kraicklist/helper/errors"
 	"net/http"
+
+	"github.com/isdzulqor/kraicklist/helper/errors"
 )
 
 // Success will write a default template response when returning a success response

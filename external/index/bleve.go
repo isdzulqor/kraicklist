@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"kraicklist/helper/logging"
 	"sync"
+
+	"github.com/isdzulqor/kraicklist/helper/logging"
 
 	"github.com/blevesearch/bleve"
 )

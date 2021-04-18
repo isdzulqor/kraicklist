@@ -1,4 +1,4 @@
-module kraicklist
+module github.com/isdzulqor/kraicklist
 
 go 1.15
 

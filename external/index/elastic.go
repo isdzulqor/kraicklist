@@ -5,12 +5,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"kraicklist/helper/errors"
-	"kraicklist/helper/jsons"
-	"kraicklist/helper/logging"
 	"strings"
 	"sync/atomic"
 	"time"
+
+	"github.com/isdzulqor/kraicklist/helper/errors"
+	"github.com/isdzulqor/kraicklist/helper/jsons"
+	"github.com/isdzulqor/kraicklist/helper/logging"
 
 	es7 "github.com/elastic/go-elasticsearch/v7"
 	"github.com/elastic/go-elasticsearch/v7/esutil"
