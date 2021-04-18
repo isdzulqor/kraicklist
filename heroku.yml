@@ -3,4 +3,4 @@ build:
     web: Dockerfile
 
 run:
-  web: sh -c "./app seed && ./app api"
+  web: sh -c "./app api"
