@@ -109,7 +109,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}/latest, ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}/${{ steps.print_changelog.outputs.latest_tag }}
+          tags: kraicklist/latest, kraicklist/${{ steps.print_changelog.outputs.latest_tag }}
       # - name: Update CHANGELOG.md
       #   run: |
       #     tag_name=${{ steps.print_changelog.outputs.tag_name }}
