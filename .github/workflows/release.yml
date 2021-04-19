@@ -1,16 +1,10 @@
 name: Release
 
 on:
-  # TODO: uncomment
-  # push:
-  #   tags:
-  #     - 'alpha*'
-  #     - 'stable*'
-  # for testing only
   push:
-    paths-ignore:
-      - "static/**"
-    branches: [ci/release-add-release]
+    tags:
+      - 'alpha*'
+      - 'stable*'
 
 jobs:
   release:
@@ -109,28 +103,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}:latest, ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}:${{ steps.print_changelog.outputs.latest_tag }}
-      # - name: Update CHANGELOG.md
-      #   run: |
-      #     tag_name=${{ steps.print_changelog.outputs.tag_name }}
-      #     git config --global user.name 'Muhammad Iskandar Dzulqornain'
-      #     git config --global user.email 'midzulqornain@gmail.com'
-      #     git remote set-url origin https://isdzulqor:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-      #     git add CHANGELOG.md
-      #     git commit -m "auto: add changelog for $tag_name"
-      #     git push origin HEAD:master
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-      - name: Reset tag after adding changelog
-        run: | 
-          tag_name=${{ steps.print_changelog.outputs.tag_name }}
-          git tag -f $tag_name
-          git config --global user.name 'Muhammad Iskandar Dzulqornain'
-          git config --global user.email 'midzulqornain@gmail.com'
-          git remote set-url origin https://isdzulqor:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git push origin -f $tag_name
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          tags: ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}:latest, ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}:${{ steps.print_changelog.outputs.tag_name }}, ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}:${{ steps.print_changelog.outputs.latest_tag }}
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1.1.2
