@@ -124,6 +124,7 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_email: "midzulqornain@gmail.com"
           heroku_app_name: "kraicklist-es"
+          stack: "container"
           usedocker: true
         env:
           HD_ELASTIC_HOST: ${{secrets.ELASTIC_HOST}}
