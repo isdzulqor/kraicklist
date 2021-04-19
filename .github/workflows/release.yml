@@ -1,10 +1,13 @@
 name: Release
 
 on:
+  # TODO: uncomment this
+  # push:
+  #   tags:
+  #     - 'alpha*'
+  #     - 'stable*'
   push:
-    tags:
-      - 'alpha*'
-      - 'stable*'
+    branches: [ci/release-add-deployment]
 
 jobs:
   release:
@@ -99,19 +102,33 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Docker build & Push
-        uses: docker/build-push-action@v2
+      # - name: Docker build & Push
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     push: true
+      #     tags: ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}:latest, ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}:${{ steps.print_changelog.outputs.tag_name }}, ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}:${{ steps.print_changelog.outputs.latest_tag }}
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1.1.2
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: ${{ steps.print_changelog.outputs.tag_name }}
+      #     release_name: Release ${{ steps.print_changelog.outputs.tag_name }}
+      #     body_path: ./temp.md
+      #     draft: false
+      #     prerelease: false
+      - name: deploy to heroku for kraicklist with ES 7 
+        uses: akhileshns/heroku-deploy@v3.12.12
         with:
-          push: true
-          tags: ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}:latest, ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}:${{ steps.print_changelog.outputs.tag_name }}, ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}:${{ steps.print_changelog.outputs.latest_tag }}
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1.1.2
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_email: "midzulqornain@gmail.com"
+          heroku_app_name: "kraicklist-es"
+          usedocker: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.print_changelog.outputs.tag_name }}
-          release_name: Release ${{ steps.print_changelog.outputs.tag_name }}
-          body_path: ./temp.md
-          draft: false
-          prerelease: false
+          HD_ELASTIC_HOST: ${{secrets.ELASTIC_HOST}}
+          HD_ELASTIC_USERNAME: ${{secrets.ELASTIC_USERNAME}}
+          HD_ELASTIC_PASSWORD: ${{secrets.ELASTIC_PASSWORD}}
+
+
+
