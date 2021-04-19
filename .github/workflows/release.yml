@@ -97,23 +97,23 @@ jobs:
           echo ::set-output name=tag_name::$tag_name
           echo ::set-output name=latest_tag::$latest_tag
       - name: Docker build & Push
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}
+          # repository: ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}
           tags: latest, ${{ steps.print_changelog.outputs.tag_name }}, ${{ steps.print_changelog.outputs.latest_tag }}
-      - name: Update CHANGELOG.md
-        run: |
-          tag_name=${{ steps.print_changelog.outputs.tag_name }}
-          git config --global user.name 'Muhammad Iskandar Dzulqornain'
-          git config --global user.email 'midzulqornain@gmail.com'
-          git remote set-url origin https://isdzulqor:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git add CHANGELOG.md
-          git commit -m "auto: add changelog for $tag_name"
-          git push origin HEAD:master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+      # - name: Update CHANGELOG.md
+      #   run: |
+      #     tag_name=${{ steps.print_changelog.outputs.tag_name }}
+      #     git config --global user.name 'Muhammad Iskandar Dzulqornain'
+      #     git config --global user.email 'midzulqornain@gmail.com'
+      #     git remote set-url origin https://isdzulqor:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+      #     git add CHANGELOG.md
+      #     git commit -m "auto: add changelog for $tag_name"
+      #     git push origin HEAD:master
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
       - name: Reset tag after adding changelog
         run: | 
           tag_name=${{ steps.print_changelog.outputs.tag_name }}
