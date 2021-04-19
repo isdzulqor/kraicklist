@@ -108,6 +108,7 @@ jobs:
       - name: Docker build & Push
         uses: docker/build-push-action@v2
         with:
+          push: true
           tags: ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}/latest, ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}/${{ steps.print_changelog.outputs.tag_name }}, ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}/${{ steps.print_changelog.outputs.latest_tag }}
       # - name: Update CHANGELOG.md
       #   run: |
