@@ -96,13 +96,19 @@ jobs:
 
           echo ::set-output name=tag_name::$tag_name
           echo ::set-output name=latest_tag::$latest_tag
-      - name: Docker build & Push
-        uses: docker/build-push-action@releases/v1
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}
-          tags: latest, ${{ steps.print_changelog.outputs.tag_name }}, ${{ steps.print_changelog.outputs.latest_tag }}
+      - name: Docker build & Push
+        uses: docker/build-push-action@v2
+        with:
+          tags: ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}/latest, ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}/${{ steps.print_changelog.outputs.tag_name }}, ${{ secrets.DOCKER_KRAICKLIST_REPOSITORY }}/${{ steps.print_changelog.outputs.latest_tag }}
       # - name: Update CHANGELOG.md
       #   run: |
       #     tag_name=${{ steps.print_changelog.outputs.tag_name }}
