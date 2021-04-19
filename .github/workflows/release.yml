@@ -125,8 +125,8 @@ jobs:
           heroku_email: "midzulqornain@gmail.com"
           heroku_app_name: "kraicklist-es"
           stack: "container"
-          usedocker: true
         env:
+          HD_INDEXER_ACTIVATED: "elastic"
           HD_ELASTIC_HOST: ${{secrets.ELASTIC_HOST}}
           HD_ELASTIC_USERNAME: ${{secrets.ELASTIC_USERNAME}}
           HD_ELASTIC_PASSWORD: ${{secrets.ELASTIC_PASSWORD}}
