@@ -10,6 +10,9 @@
       <a href="https://github.com/isdzulqor/kraicklist/actions?query=workflow%3A%22Test+Integration%22">
         <img src="https://github.com/isdzulqor/kraicklist/workflows/Test Integration/badge.svg?branch=master"/>
 		  </a>
+      <a href="https://github.com/isdzulqor/kraicklist/actions?query=workflow%3A%22Release%22">
+        <img src="https://github.com/isdzulqor/kraicklist/workflows/Release/badge.svg"/>
+		  </a>
     </p>
 </div>
 
