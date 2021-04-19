@@ -26,8 +26,8 @@
 - [[DRAFT] Future Enhancements](#draft-future-enhancements)
 
 ## Live Version
-- http://still-in-todo.com - with Elastic Search
-- http://still-in-todo.com - with Bleve Search
+- https://kraicklist-es.herokuapp.com - with Elastic Search
+- https://kraicklist-bleve.herokuapp.com - with Bleve Search
 
 ## Features
 - Full-text search with tf-idf from Bleve Search
