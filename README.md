@@ -95,8 +95,10 @@
     ```
 - Use Docker
   ```
-  # replace the YOUR_PATH_DATA with PATH on your host machine
-  $ docker run --env-file .env -p 7000:7000 -v YOUR_PATH_DATA:/data isdzulqor/kraicklist:latest sh -c "./app seed && ./app api"
+  $ docker run --env-file .env -p 7000:7000 isdzulqor/kraicklist:latest sh -c "./app seed && ./app api"
+
+  # you can also mounting the data directory to your host machine by utilizing --volume flag
+  # i.e: --volume YOUR_PATH_DATA:/data 
   ```
 - Use Docker Compose
   ```
