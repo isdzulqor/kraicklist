@@ -50,7 +50,7 @@ jobs:
             - A correlation ID support in mind
             - CI/CD: build, integration test, release with Github Action
               - release: Auto create changelog
-              - release: Auto deploy to heroku & release to docker hub
+              - release: Auto release to docker hub
 
             See Details at [README](https://github.com/${{ github.repository }}/blob/master/README.md)
             " >> temp.md
