@@ -1,0 +1,71 @@
+name: Release AWS
+
+on:
+  push:
+    tags:
+      - 'alpha*'
+      - 'stable*'
+
+jobs:
+  release:
+    name: Release AWS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Set outputs
+        id: vars
+        run: | 
+          # get tag name
+          tag_name="${GITHUB_REF#refs/tags/}"
+          echo ::set-output name=tag_name::$tag_name
+      - name: Set up Go 1.15.2
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15.2
+        id: go
+      - name: Build kraicklist app
+        run: GOOS=linux GOARCH=amd64 go build -o bin/application main.go
+      
+      # Deployment to Elastic Beanstalk
+      - name: Generate deployment package
+        run: zip -r deploy.zip . -x '*.git*'
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v16
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: kraicklist-isdzulqor
+          environment_name: kraicklistisdzulqor-env
+          version_label: ${{ steps.vars.outputs.tag_name }}
+          region: us-east-2
+          deployment_package: deploy.zip
+      
+      # Deployment to EC2
+      - name: Prepare deployment directory for EC2
+        run: | 
+          mkdir target
+          mv bin/application target/application
+          mv data target/
+          mv static target/
+      - name: ssh deploy to AWS EC2
+        uses: easingthemes/ssh-deploy@v2.1.7
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_AWS_EC2_PRIVATE_KEY }}
+          SOURCE: "./target"
+          REMOTE_HOST: ${{ secrets.SSH_AWS_EC2_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_AWS_EC2_USER }}
+          TARGET: "~"
+
+      - name: Deploy app with background process using SSH
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_AWS_EC2_HOST }}
+          username: ${{ secrets.SSH_AWS_EC2_USER }}
+          key: ${{ secrets.SSH_AWS_EC2_PRIVATE_KEY }}
+          envs: PORT
+          port: 22
+          script: |
+            cd target
+            kill -SIGTERM $(lsof -n -t -i4TCP:7000)
+            screen -dmSL kraicklist-app ./application api
