@@ -2,7 +2,9 @@ name: Release AWS
 
 on:
   push:
-    branches: [ci/add-deploy-ec2]
+    tags:
+      - 'alpha*'
+      - 'stable*'
 
 jobs:
   release:
