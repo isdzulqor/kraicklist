@@ -2,7 +2,9 @@ name: Release Elastic Beanstalk
 
 on:
   push:
-    branches: [ci/add-deploy-ebs]
+    tags:
+      - 'alpha*'
+      - 'stable*'
 
 jobs:
   release:
@@ -16,7 +18,9 @@ jobs:
       - name: Set outputs
         id: vars
         run: | 
-          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+          # get tag name
+          tag_name="${GITHUB_REF#refs/tags/}"
+          echo ::set-output name=tag_name::$tag_name
       - name: Set up Go 1.15.2
         uses: actions/setup-go@v2
         with:
@@ -33,6 +37,6 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: kraicklist-isdzulqor
           environment_name: kraicklistisdzulqor-env
-          version_label: ${{ steps.vars.outputs.sha_short }}
+          version_label: ${{ steps.vars.outputs.tag_name }}
           region: us-east-2
           deployment_package: deploy.zip
