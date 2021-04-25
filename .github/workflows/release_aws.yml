@@ -6,10 +6,11 @@ on:
 
 jobs:
   release:
-    name: Release
+    name: Release AWS
     runs-on: ubuntu-latest
     env:
-      APP_VERSION: ${GITHUB_SHA::8}
+      # env for EC2
+      PORT: 80
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -42,11 +43,16 @@ jobs:
       #     deployment_package: deploy.zip
       
       # Deployment to EC2
+      - name: prepare deployment directory for EC2
+        run: | 
+          mv bin/application target/application
+          mv data target/
+          mv static target/
       - name: ssh deploy to AWS EC2
         uses: easingthemes/ssh-deploy@v2.1.7
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_AWS_EC2_PRIVATE_KEY }}
-          SOURCE: "./bin"
+          SOURCE: "./target"
           REMOTE_HOST: ${{ secrets.SSH_AWS_EC2_HOST }}
           REMOTE_USER: ${{ secrets.SSH_AWS_EC2_USER }}
           TARGET: "~"
@@ -57,5 +63,9 @@ jobs:
           host: ${{ secrets.SSH_AWS_EC2_HOST }}
           username: ${{ secrets.SSH_AWS_EC2_USER }}
           key: ${{ secrets.SSH_AWS_EC2_PRIVATE_KEY }}
+          envs: PORT
           port: 22
-          script: whoami
+          script: |
+            cd target
+            kill -SIGTERM $(lsof -n -t -i4TCP:80)
+            screen -dmSL kraicklist-app ./application api
