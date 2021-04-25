@@ -8,7 +8,7 @@ jobs:
   release:
     name: Release AWS
     runs-on: ubuntu-latest
-    env:
+    # env:
       # env for EC2
       # PORT: 80
     steps:
