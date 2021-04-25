@@ -45,6 +45,7 @@ jobs:
       # Deployment to EC2
       - name: prepare deployment directory for EC2
         run: | 
+          mkdir target
           mv bin/application target/application
           mv data target/
           mv static target/
