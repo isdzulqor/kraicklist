@@ -20,6 +20,12 @@ jobs:
         run: GOOS=linux GOARCH=amd64 go build -o bin/application main.go
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
+      - name: Get branch & commit sha for app version 
+        id: vars
+        shell: bash
+        run: |
+          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v16
         with:
@@ -27,6 +33,6 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: kraicklist-isdzulqor
           environment_name: kraicklistisdzulqor-env
-          version_label: kraicklist-isdzulqor-3
+          version_label: ${{ steps.vars.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
           region: us-east-2
           deployment_package: deploy.zip
