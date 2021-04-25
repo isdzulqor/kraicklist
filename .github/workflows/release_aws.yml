@@ -8,9 +8,6 @@ jobs:
   release:
     name: Release AWS
     runs-on: ubuntu-latest
-    # env:
-      # env for EC2
-      # PORT: 80
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -29,21 +26,21 @@ jobs:
         run: GOOS=linux GOARCH=amd64 go build -o bin/application main.go
       
       # Deployment to Elastic Beanstalk
-      # - name: Generate deployment package
-      #   run: zip -r deploy.zip . -x '*.git*'
-      # - name: Deploy to EB
-      #   uses: einaregilsson/beanstalk-deploy@v16
-      #   with:
-      #     aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     application_name: kraicklist-isdzulqor
-      #     environment_name: kraicklistisdzulqor-env
-      #     version_label: ${{ steps.vars.outputs.tag_name }}
-      #     region: us-east-2
-      #     deployment_package: deploy.zip
+      - name: Generate deployment package
+        run: zip -r deploy.zip . -x '*.git*'
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v16
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: kraicklist-isdzulqor
+          environment_name: kraicklistisdzulqor-env
+          version_label: ${{ steps.vars.outputs.tag_name }}
+          region: us-east-2
+          deployment_package: deploy.zip
       
       # Deployment to EC2
-      - name: prepare deployment directory for EC2
+      - name: Prepare deployment directory for EC2
         run: | 
           mkdir target
           mv bin/application target/application
@@ -58,7 +55,7 @@ jobs:
           REMOTE_USER: ${{ secrets.SSH_AWS_EC2_USER }}
           TARGET: "~"
 
-      - name: executing remote ssh commands using ssh key
+      - name: Deploy app with background process using SSH
         uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.SSH_AWS_EC2_HOST }}
