@@ -47,15 +47,15 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_AWS_EC2_PRIVATE_KEY }}
           SOURCE: "./bin"
-          REMOTE_HOST: "3.141.106.12"
-          REMOTE_USER: "isdzulqor"
+          REMOTE_HOST: ${{ secrets.SSH_AWS_EC2_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_AWS_EC2_USER }}
           TARGET: "~"
 
       - name: executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@v0.1.4
         with:
-          host: "3.141.106.12"
-          username: "isdzulqor"
+          host: ${{ secrets.SSH_AWS_EC2_HOST }}
+          username: ${{ secrets.SSH_AWS_EC2_USER }}
           key: ${{ secrets.SSH_AWS_EC2_PRIVATE_KEY }}
           port: 22
           script: whoami
