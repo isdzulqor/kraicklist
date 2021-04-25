@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # env for EC2
-      PORT: 80
+      # PORT: 80
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -68,5 +68,5 @@ jobs:
           port: 22
           script: |
             cd target
-            kill -SIGTERM $(lsof -n -t -i4TCP:80)
+            kill -SIGTERM $(lsof -n -t -i4TCP:7000)
             screen -dmSL kraicklist-app ./application api
