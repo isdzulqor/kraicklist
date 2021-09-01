@@ -29,7 +29,7 @@ type Config struct {
 		}
 	}
 
-	IndexerActivated string `envconfig:"INDEXER_ACTIVATED" default:"bleve"` // bleve | elastic
+	IndexerActivated string `envconfig:"INDEXER_ACTIVATED" default:"bleve"` // bleve | elastic | sql
 
 	Elastic struct {
 		Host     []string `envconfig:"ELASTIC_HOST" default:"http://localhost:9200"`
@@ -38,6 +38,15 @@ type Config struct {
 
 		PingRetry    int           `envconfig:"ELASTIC_PING_RETRY" default:"10"`
 		PingWaitTime time.Duration `envconfig:"ELASTIC_PING_WAIT_TIME" default:"5s"`
+	}
+
+	PostgreSQL struct {
+		Host            string `envconfig:"POSTGRESQL_HOST" default:"localhost"`
+		Port            int    `envconfig:"POSTGRESQL_PORT" default:"54320"`
+		Username        string `envconfig:"POSTGRESQL_USERNAME" default:"postgres"`
+		Password        string `envconfig:"POSTGRESQL_PASSWORD" default:"root123"`
+		Database        string `envconfig:"POSTGRESQL_DATABASE" default:"kraicklist"`
+		ConnectionLimit int    `envconfig:"POSTGRESQL_CONNECTION_LIMIT" default:"40"`
 	}
 }
 

@@ -20,6 +20,7 @@ import (
 const (
 	prefixElastic = "external-elastic:"
 	IndexElastic  = "elastic"
+	IndexSQL      = "sql"
 )
 
 type ElasticDoc struct {
